@@ -137,16 +137,16 @@ check_installed_version() {
 }
 
 # work in progress
-remove_download() {
+# remove_download() {
     
-}
+# }
 
 check_prerequirements
 get_new_version
 check_installed_version
 download_proton
 unpack_proton
-remove_download
+# remove_download
 
 echo 'Done, please restart Steam and follow these instructions:'
 echo 'https://github.com/GloriousEggroll/proton-ge-custom#enabling'
