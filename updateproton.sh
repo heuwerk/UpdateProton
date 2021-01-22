@@ -90,7 +90,7 @@ unpack_proton() {
 			echo "Cleanup..."
 			for dir in "$proton_path"/* ; do
 				if [[ $(basename $dir) == *$release_level* ]] ; then
-					rm -r $dir
+					rm -rf $dir
 				fi
 			done
 			;;
