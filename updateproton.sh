@@ -1,7 +1,6 @@
 #!/bin/bash
 # Name: updateproton.sh
 # Autor: heuwerk
-# Version: 0.1.3
 
 release=$1
 
