@@ -81,7 +81,7 @@ unpack_proton() {
 	proton_archive="Proton-$proton_version.tar.gz"
 	proton_directory="Proton-$proton_version"
 	
-	if [ -n $proton_installed ] ; then
+	if [ ! -z $proton_installed ] ; then
 		read -p "Delete old Proton-Version? [y/N]: " cleanup
 	fi
 
