@@ -13,11 +13,11 @@ get_new_version() {
 
 	# selection Release-Level with parameter
 	case "$release" in
-  	ST|st) release_level='ST'
-  	;;
-   	*) release_level=''
-   	;;
-	esac
+        ST|st) release_level='ST'
+        ;;
+    	*) release_level=''
+        ;;
+ 	esac
 		
 	# regular expression for extraction of the Proton-Version out of HTML-Code
 	regex="*muted-link.*tag/[[:digit:]]+\.[[:digit:]]+-GE-[[:digit:]]-?($release_level)"
@@ -81,7 +81,7 @@ unpack_proton() {
 	proton_archive="Proton-$proton_version.tar.gz"
 	proton_directory="Proton-$proton_version"
 	
-	if [ ! -z $proton_installed ] ; then
+	if [ -n $proton_installed ] ; then
 		read -p "Delete old Proton-Version? [y/N]: " cleanup
 	fi
 
@@ -106,23 +106,25 @@ unpack_proton() {
 check_installed_version() {
 		
     # needs more testing!
-	for dir in "$proton_path"/* ; do
-		if [[ $(basename $dir) == *$release_level* ]] ; then
-			proton_installed=$(basename $dir)
-			proton_installed=${proton_installed#*-}
-		fi
-	done
-			
-	if [ -n $proton_installed ] ; then
+	if [ -z $(ls -A $proton_path) ] ; then
+        echo "Proton not installed."
+    else
+        for dir in "$proton_path"/* ; do
+            if [[ $(basename $dir) == *$release_level* ]] ; then
+                proton_installed=$(basename $dir)
+                proton_installed=${proton_installed#*-}
+                break
+            fi
+        done
+    fi
+    
+	if [ ! -z $proton_installed ] ; then
 		echo "Installed Version: $proton_installed"
 	fi
-
 
 	if [[ $proton_version == $proton_installed ]] ; then
 		echo "Newest Version already installed"
 		exit 0
-	elif [ -z $proton_installed ] ; then 
-		echo "Proton not installed"
 	else
 		echo "Update available"
 	fi
@@ -138,7 +140,7 @@ check_installed_version() {
 
 # work in progress
 remove_download() {
-    rm -f "$download_path$proton_archive"
+    rm -f "$download_path/$proton_archive"
 }
 
 check_prerequirements
