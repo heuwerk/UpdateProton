@@ -19,7 +19,7 @@ get_new_version() {
  	esac
 		
 	# regular expression for extraction of the Proton-Version out of HTML-Code
-	regex="*muted-link.*tag/[[:digit:]]+\.[[:digit:]]+-GE-[[:digit:]]-?($release_level)"
+	regex="*Link--muted.*tag/[[:digit:]]+\.[[:digit:]]+-GE-[[:digit:]]-?($release_level)"
 
 	# downloads the website
 	wget $WEBSITE --quiet
