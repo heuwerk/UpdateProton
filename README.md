@@ -17,7 +17,7 @@ The script aims to use only native GNU-Tools, therefore it should work out of th
 	- rm
 - generic loops and conditions
 	- if
-	- for
+	- case
 	- for
 
 ## Proton-GE-custom
