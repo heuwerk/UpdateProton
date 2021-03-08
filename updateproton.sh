@@ -22,12 +22,12 @@ get_new_version() {
 	regex="*Link--muted.*tag/[[:digit:]]+\.[[:digit:]]+-GE-[[:digit:]]-?($release_level)"
 
 	# downloads the website
-	wget $WEBSITE --quiet
+	
     
 #      echo "wget exit code: $?"
     
     # checks for wget exit codes an terminates the progam, if an error occured
-    if [ $? -ne 0 ] ; then
+    if ! wget $WEBSITE --quiet ; then
         echo "ERROR: No internet connection!"
         exit 1
     fi
