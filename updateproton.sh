@@ -9,7 +9,7 @@ get_new_version() {
 	readonly WEBSITE='https://github.com/GloriousEggroll/proton-ge-custom/tags'
 
 	echo "Checking for new Proton Version..."
-
+	
 	# selection Release-Level with parameter
 	case "$release" in
         ST|st) release_level='ST'
@@ -23,7 +23,15 @@ get_new_version() {
 
 	# downloads the website
 	wget $WEBSITE --quiet
-
+    
+#      echo "wget exit code: $?"
+    
+    # checks for wget exit codes an terminates the progam, if an error occured
+    if [ $? -ne 0 ] ; then
+        echo "ERROR: No internet connection!"
+        exit 1
+    fi
+    
 	# extracts the newest Proton-Release
 	# egrep for regex
 	# sort for getting only one item per version 
