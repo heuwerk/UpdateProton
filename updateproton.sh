@@ -22,10 +22,6 @@ get_new_version() {
 	regex="*Link--muted.*tag/[[:digit:]]+\.[[:digit:]]+-GE-[[:digit:]]-?($release_level)"
 
 	# downloads the website
-	
-    
-#      echo "wget exit code: $?"
-    
     # checks for wget exit codes an terminates the progam, if an error occured
     if ! wget $WEBSITE --quiet ; then
         echo "ERROR: No internet connection!"
@@ -59,7 +55,10 @@ download_proton() {
 		
 		if [ ! -e "$download_path/Proton-$proton_version.tar.gz" ] ; then
 			# Downloads the new Proton-Version
-			wget "$file" --quiet --show-progress --directory-prefix="$download_path"
+			if ! wget "$file" --quiet --show-progress --directory-prefix="$download_path" ; then
+                echo "ERROR: No internet connection!"
+                exit 1
+            fi
 		fi
 	else
 		echo "Update aborted"
