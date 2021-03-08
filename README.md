@@ -1,5 +1,9 @@
 # UpdateProton
 This simple bash script checks for the newest Version of Proton-GE-custom and installs it.
+## Usage
+Just place this script in any user directory and run
+``./updateproton.sh``
+(the e**x**exute privilige is required) in your terminal
 ## Used Tools
 The script aims to use only native GNU-Tools, therefore it should work out of the box on any modern GNU/Linux Machine.
 - wget
