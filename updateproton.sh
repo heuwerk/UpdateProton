@@ -37,7 +37,7 @@ get_new_version() {
 	# sort for getting only one item per version 
 	# cut to only get the Version-Number out of regex 
 	# tail to only get the latest version
-	proton_version=$(egrep $regex tags -o | sort --unique --version-sort | cut --delimiter=/ --fields=6 | tail -1)
+	proton_version=$(grep -E "$regex" tags -o | sort --unique --version-sort | cut --delimiter=/ --fields=6 | tail -1)
 
 	# output of newest version
     if [ -z $release_level ] ; then
@@ -51,15 +51,15 @@ get_new_version() {
 }
 
 download_proton() {
-	if [ $update = "true" ] ; then
+	if [ "$update" = "true" ] ; then
 		download_path="$HOME/Downloads"
 
 		# generates a Path that wget can Download
 		file=${WEBSITE%/*}/releases/download/$proton_version/Proton-$proton_version.tar.gz
 		
-		if [ ! -e $download_path/Proton-$proton_version.tar.gz ] ; then
+		if [ ! -e "$download_path/Proton-$proton_version.tar.gz" ] ; then
 			# Downloads the new Proton-Version
-			wget $file --quiet --show-progress --directory-prefix=$download_path
+			wget "$file" --quiet --show-progress --directory-prefix="$download_path"
 		fi
 	else
 		echo "Update aborted"
@@ -71,33 +71,33 @@ check_prerequirements() {
 	proton_path="$HOME/.steam/root/compatibilitytools.d"
 	
 	# is steam installed?
-	if [ ! -d $HOME/.steam ] ; then
+	if [ ! -d "$HOME/.steam" ] ; then
 		echo "ERROR: Steam not installed!"
 		exit 1
 	fi
 
 	# is the path created?
-	if [ ! -d $proton_path ] ; then
+	if [ ! -d "$proton_path" ] ; then
 		echo "Create directory..."
-		mkdir -p $proton_path
+		mkdir -p "$proton_path"
 	fi
 }
 
 # Extracts the .tar.gz archive to the destination
 unpack_proton() {
 	proton_archive="Proton-$proton_version.tar.gz"
-	proton_directory="Proton-$proton_version"
+# 	proton_directory="Proton-$proton_version"
 	
-	if [ ! -z $proton_installed ] ; then
-		read -p "Delete old Proton-Version? [y/N]: " cleanup
+	if [ -n "$proton_installed" ] ; then
+		read -rp "Delete old Proton-Version? [y/N]: " cleanup
 	fi
 
 	case "$cleanup" in
 		[YyJj]|[Yy]es|[Jj]a)
 			echo "Cleanup..."
 			for dir in "$proton_path"/* ; do
-				if [[ $(basename $dir) == *$release_level* ]] ; then
-					rm -rf $dir
+				if [[ $(basename "$dir") == *$release_level* ]] ; then
+					rm -rf "$dir"
 				fi
 			done
 			;;
@@ -105,38 +105,38 @@ unpack_proton() {
 			;;
 	esac
 
-	cd $download_path
-	tar --extract --file $proton_archive --directory $proton_path 
+	cd "$download_path" || return
+	tar --extract --file "$proton_archive" --directory "$proton_path "
 }
 
 # checks, if the newest version is already installed. NOT TESTED!!!
 check_installed_version() {
 		
     # needs more testing!
-	if [ -z $(ls -A $proton_path) ] ; then
+	if [ -z "$(ls -A "$proton_path")" ] ; then
         echo "Proton not installed."
     else
         for dir in "$proton_path"/* ; do
-            if [[ $(basename $dir) == *$release_level* ]] ; then
-                proton_installed=$(basename $dir)
+            if [[ $(basename "$dir") == *$release_level* ]] ; then
+                proton_installed=$(basename "$dir")
                 proton_installed=${proton_installed#*-}
                 break
             fi
         done
     fi
     
-	if [ ! -z $proton_installed ] ; then
+	if [ -n "$proton_installed" ] ; then
 		echo "Installed Version: $proton_installed"
 	fi
 
-	if [[ $proton_version == $proton_installed ]] ; then
+	if [[ "$proton_version" == "$proton_installed" ]] ; then
 		echo "Newest Version already installed"
 		exit 0
 	else
 		echo "Update available"
 	fi
 
-	read -p "Install new version? [Y/n]: " answer
+	read -rp "Install new version? [Y/n]: " answer
 	case "$answer" in
 		[Nn]|[Nn]o|[Nn]ein) update=false
 		;;
