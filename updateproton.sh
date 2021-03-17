@@ -105,7 +105,7 @@ unpack_proton() {
 	esac
 
 	cd "$download_path" || return
-	tar --extract --file "$proton_archive" --directory "$proton_path "
+	tar --extract --file "$proton_archive" --directory "$proton_path"
 }
 
 # checks, if the newest version is already installed. NOT TESTED!!!
