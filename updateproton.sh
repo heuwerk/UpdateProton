@@ -41,7 +41,7 @@ get_new_version() {
     else
         echo "Newest $release_level-Version: $proton_version"
     fi
-	
+
 	# deletes the file
 	rm tags
 }
@@ -133,6 +133,8 @@ check_installed_version() {
 		exit 0
 	else
 		echo "Update available"
+		# link to the changelog on GitHub
+        echo "You may want to read the changelog first: https://github.com/GloriousEggroll/proton-ge-custom/releases/tag/$proton_version"
 	fi
 
 	read -rp "Install new version? [Y/n]: " answer
