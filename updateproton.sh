@@ -111,12 +111,12 @@ unpack_proton() {
 # checks, if the newest version is already installed. NOT TESTED!!!
 check_installed_version() {
 		
-    # needs more testing!
+  # needs more testing!
 	if [ -z "$(ls -A "$proton_path")" ] ; then
         echo "Proton not installed."
     else
         for dir in "$proton_path"/* ; do
-            if [[ $(basename "$dir") == *$release_level* ]] ; then
+            if [[ $(basename "$dir") == *$proton_version ]] ; then
                 proton_installed=$(basename "$dir")
                 proton_installed=${proton_installed#*-}
                 break
