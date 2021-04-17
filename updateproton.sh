@@ -116,7 +116,8 @@ check_installed_version() {
         echo "Proton not installed."
     else
         for dir in "$proton_path"/* ; do
-            if [[ $(basename "$dir") == *$release_level* ]] ; then
+            if [[ $(basename "$dir") == *$proton_version* ]] ; then
+
                 proton_installed=$(basename "$dir")
                 proton_installed=${proton_installed#*-}
                 break
