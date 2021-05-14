@@ -2,45 +2,26 @@
 # Name: updateproton.sh
 # Autor: heuwerk
 
-release=$1
-
 get_new_version() {
 	# definition of needed variables
 	readonly WEBSITE='https://github.com/GloriousEggroll/proton-ge-custom/tags'
+    readonly REGEX="<a h.*tag/.*[0-9]"
+    proton_version=''
 
 	echo "Checking for new Proton Version..."
-	
-	# selection Release-Level with parameter
-	case "$release" in
-        ST|st) release_level='ST'
-        ;;
-    	*) release_level=''
-        ;;
- 	esac
-		
-	# regular expression for extraction of the Proton-Version out of HTML-Code
-	regex="*Link--muted.*tag/[[:digit:]]+\.[[:digit:]]+-GE-[[:digit:]]-?($release_level)"
 
-	# downloads the website
-    # checks for wget exit codes an terminates the progam, if an error occured
-    if ! wget $WEBSITE --quiet ; then
-        echo "ERROR: No internet connection!"
-        exit 1
-    fi
-    
+    # downloads the website
+    # terminates the progam, if an error occured
+    wget "$WEBSITE" -q || ( echo "ERROR: No internet connection!" && exit 1 )
+
 	# extracts the newest Proton-Release
-	# egrep for regex
-	# sort for getting only one item per version 
 	# cut to only get the Version-Number out of regex 
-	# tail to only get the latest version
-	proton_version=$(grep -E "$regex" tags -o | sort --unique --version-sort | cut --delimiter=/ --fields=6 | tail -1)
+	# ta
+	proton_version=$(grep -o "$REGEX" tags | head -n1 | cut -d/ -f6)
 
 	# output of newest version
-    if [ -z $release_level ] ; then
-        echo "Newest Version: $proton_version"
-    else
-        echo "Newest $release_level-Version: $proton_version"
-    fi
+    echo "Newest Version: $proton_version"
+
 
 	# deletes the file
 	rm tags
