@@ -9,7 +9,6 @@ Just place this script in any user directory and run
 The script aims to use only native GNU-Tools, therefore it should work out of the box on any modern GNU/Linux Machine. It is also POSIX shell compliant.
 - wget
 - tar
-- unzip
 - GNU coreutils
 
 ## Proton-GE-custom
