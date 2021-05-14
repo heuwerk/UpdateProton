@@ -2,13 +2,11 @@
 # Name: updateproton.sh
 # Autor: heuwerk
 
-# definition of needed variables
+# definition of constant variables
 readonly WEBSITE='https://github.com/GloriousEggroll/proton-ge-custom/tags'
 readonly REGEX='<a c.*tag/.*[0-9]..$'
 readonly PROTON_PATH="$HOME/.steam/root/compatibilitytools.d"
 readonly PROTON_DOWNLOAD_PATH="$HOME/Downloads/vagrant_share"
-
-update=""
 
 # checks if all required directories are present
 check_prerequirements() {
@@ -39,8 +37,7 @@ get_new_version() {
 
 # checks, if the newest version is already installed. NOT TESTED!!!
 check_installed_version() {
-    proton_installed="$(find "$PROTON_PATH" -mindepth 1 -maxdepth 1 | sort -V | tail -1 )"
-    proton_installed="${proton_installed##*/}"
+    proton_installed="$(find "$PROTON_PATH" -mindepth 1 -maxdepth 1 | sort -V | tail -1 | cut -d/ -f7)"
     proton_installed="${proton_installed#*-}"
 
 	[ "$proton_version" = "$proton_installed" ] && echo "Newest version already installed" && exit 0
@@ -92,6 +89,7 @@ unpack_proton() {
 			rm -rf "${PROTON_PATH:?}/*"
 	esac
 
+	# extracts the archive to the destination and deletes everything afterwards
 	tar -xzf "$PROTON_DOWNLOAD_PATH/$proton_archive" -C "$PROTON_PATH"
 	rm -rf "$PROTON_DOWNLOAD_PATH" "${checksum##*/}"
 }
@@ -101,5 +99,5 @@ get_new_version && \
 check_installed_version && \
 download_proton && \
 unpack_proton && \
-printf '\nDone! Please restart Steam and follow these instructions:
-https://github.com/GloriousEggroll/proton-ge-custom#enabling\n'
+printf "\nDone! Please restart Steam and follow these instructions:
+https://github.com/GloriousEggroll/proton-ge-custom#enabling\n"
