@@ -39,14 +39,14 @@ get_new_version() {
 
 # checks, if the newest version is already installed. NOT TESTED!!!
 check_installed_version() {
-
-    proton_installed="$(find "$PROTON_PATH" -mindepth 1 -maxdepth 1 | sort -rV | head -n1 )"
+    proton_installed="$(find "$PROTON_PATH" -mindepth 1 -maxdepth 1 | sort -V | tail -1 )"
     proton_installed="${proton_installed##*/}"
+    proton_installed="${proton_installed#*-}"
 
-	[ "$proton_version" = "$proton_installed" ] && echo "Newest Version already installed" && exit 0
+	[ "$proton_version" = "$proton_installed" ] && echo "Newest version already installed" && exit 0
 
 	[ -n "$proton_installed" ] && \
-        printf "Installed Version: %s\n" "$proton_installed" || \
+        printf "Installed version: %s\n" "$proton_installed" || \
         printf "Proton not installed\n"
 
     printf "Changelog: https://github.com/GloriousEggroll/proton-ge-custom/releases/tag/%s\n" "$proton_version"
@@ -101,5 +101,5 @@ get_new_version && \
 check_installed_version && \
 download_proton && \
 unpack_proton && \
-printf '\nDone! Please restart Steam and follow these instructions:\n
-    https://github.com/GloriousEggroll/proton-ge-custom#enabling\n'
+printf '\nDone! Please restart Steam and follow these instructions:
+https://github.com/GloriousEggroll/proton-ge-custom#enabling\n'
