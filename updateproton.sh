@@ -1,163 +1,103 @@
-#!/bin/bash
+#!/bin/sh
 # Name: updateproton.sh
 # Autor: heuwerk
 
-release=$1
+# definition of constant variables
+readonly WEBSITE='https://github.com/GloriousEggroll/proton-ge-custom/tags'
+readonly REGEX='<a c.*tag/.*[0-9]..$'
+readonly PROTON_PATH="$HOME/.steam/root/compatibilitytools.d"
+readonly PROTON_DOWNLOAD_PATH="$HOME/Downloads/vagrant_share"
+
+# checks if all required directories are present
+check_prerequirements() {
+	# check if .steam dir is present
+	[ -d "$HOME/.steam" ] || ( printf "ERROR: Steam not installed!\n" && exit 1 )
+
+	# check if compatibilitytools dir is present
+	[ -d "$PROTON_PATH" ] || mkdir -p "$PROTON_PATH"
+}
 
 get_new_version() {
-	# definition of needed variables
-	readonly WEBSITE='https://github.com/GloriousEggroll/proton-ge-custom/tags'
+	# downloads the website, terminates the progam, if an error occures
+	wget "$WEBSITE" -q || ( printf "ERROR: No internet connection!\n" && exit 1 )
 
-	echo "Checking for new Proton Version..."
-	
-	# selection Release-Level with parameter
-	case "$release" in
-        ST|st) release_level='ST'
-        ;;
-    	*) release_level=''
-        ;;
- 	esac
-		
-	# regular expression for extraction of the Proton-Version out of HTML-Code
-	regex="*Link--muted.*tag/[[:digit:]]+\.[[:digit:]]+-GE-[[:digit:]]-?($release_level)"
-
-	# downloads the website
-    # checks for wget exit codes an terminates the progam, if an error occured
-    if ! wget $WEBSITE --quiet ; then
-        echo "ERROR: No internet connection!"
-        exit 1
-    fi
-    
-	# extracts the newest Proton-Release
-	# egrep for regex
-	# sort for getting only one item per version 
-	# cut to only get the Version-Number out of regex 
-	# tail to only get the latest version
-	proton_version=$(grep -E "$regex" tags -o | sort --unique --version-sort | cut --delimiter=/ --fields=6 | tail -1)
+	# extracts the newest Proton release from tags file
+	# grep: search for the regular expression in the downloaded file
+	# head: take only the first line
+	# cut: cut everything before the version number
+	proton_version="$(grep -o "$REGEX" tags | head -n1 | cut -d/ -f6)"
+	proton_version="${proton_version%\"*}"
 
 	# output of newest version
-    if [ -z $release_level ] ; then
-        echo "Newest Version: $proton_version"
-    else
-        echo "Newest $release_level-Version: $proton_version"
-    fi
+	printf "Newest version: %s\n" "$proton_version"
 
-	# deletes the file
+	# delete the file
 	rm tags
 }
 
-download_proton() {
-	if [ "$update" = "true" ] ; then
-		download_path="$HOME/Downloads"
+# checks, if the newest version is already installed. NOT TESTED!!!
+check_installed_version() {
+    proton_installed="$(find "$PROTON_PATH" -mindepth 1 -maxdepth 1 | sort -V | tail -1 | cut -d/ -f7)"
+    proton_installed="${proton_installed#*-}"
 
-		# generates a Path that wget can Download
-		file=${WEBSITE%/*}/releases/download/$proton_version/Proton-$proton_version.tar.gz
-		
-		if [ ! -e "$download_path/Proton-$proton_version.tar.gz" ] ; then
-			# Downloads the new Proton-Version
-			if ! wget "$file" --quiet --show-progress --directory-prefix="$download_path" ; then
-                echo "ERROR: No internet connection!"
-                exit 1
-            fi
-		fi
-	else
-		echo "Update aborted"
-		exit 1
-	fi
+	[ "$proton_version" = "$proton_installed" ] && echo "Newest version already installed" && exit 0
+
+	[ -n "$proton_installed" ] && \
+        printf "Installed version: %s\n" "$proton_installed" || \
+        printf "Proton not installed\n"
+
+    printf "Changelog: https://github.com/GloriousEggroll/proton-ge-custom/releases/tag/%s\n" "$proton_version"
+
+	printf "\nInstall new version? [Y/n]: " ; read -r answer
+	case "$answer" in
+		[YyJj]|[Yy]es|[Jj]a|"") update="1"
+		;;
+	esac
 }
 
-check_prerequirements() {
-	proton_path="$HOME/.steam/root/compatibilitytools.d"
-	
-	# is steam installed?
-	if [ ! -d "$HOME/.steam" ] ; then
-		echo "ERROR: Steam not installed!"
-		exit 1
-	fi
+# download and verify the new proton version
+download_proton() {
+    cd "$HOME/Downloads" || exit 1
 
-	# is the path created?
-	if [ ! -d "$proton_path" ] ; then
-		echo "Create directory..."
-		mkdir -p "$proton_path"
+     # check if download dir is present
+	[ -d "$PROTON_DOWNLOAD_PATH" ] || mkdir -p "$PROTON_DOWNLOAD_PATH"
+
+	if [ -n "$update" ] ; then
+		# generates a Path that wget can Download
+		file="${WEBSITE%/*}/releases/download/$proton_version/Proton-$proton_version.tar.gz"
+		checksum="${WEBSITE%/*}/releases/download/$proton_version/Proton-$proton_version.sha512sum"
+		
+		[ -e "$PROTON_DOWNLOAD_PATH/${file##*/}" ] || \
+            ( wget "$file" -q --show-progress -P "$PROTON_DOWNLOAD_PATH" || \
+            ( echo "ERROR: No internet connection!" && exit 1 ))
+
+		wget -q "$checksum" && sha512sum --quiet -c "${checksum##*/}" && printf "Verification OK"
+	else
+		printf "Installation aborted\n"; exit 1
 	fi
 }
 
 # Extracts the .tar.gz archive to the destination
 unpack_proton() {
-	proton_archive="Proton-$proton_version.tar.gz"
-# 	proton_directory="Proton-$proton_version"
+	proton_archive="${file##*/}"
 	
-	if [ -n "$proton_installed" ] ; then
-		read -rp "Delete old Proton-Version? [y/N]: " cleanup
-	fi
+	[ -n "$proton_installed" ] && echo "Delete ALL old versions? [y/N]: " && read -r cleanup
 
 	case "$cleanup" in
 		[YyJj]|[Yy]es|[Jj]a)
-			echo "Cleanup..."
-			for dir in "$proton_path"/* ; do
-				if [[ $(basename "$dir") == *$release_level* ]] ; then
-					rm -rf "$dir"
-				fi
-			done
-			;;
-		*)
-			;;
+            printf "Cleanup..."
+			rm -rf "${PROTON_PATH:?}/*"
 	esac
 
-	cd "$download_path" || return
-	tar --extract --file "$proton_archive" --directory "$proton_path"
+	# extracts the archive to the destination and deletes everything afterwards
+	tar -xzf "$PROTON_DOWNLOAD_PATH/$proton_archive" -C "$PROTON_PATH"
+	rm -rf "$PROTON_DOWNLOAD_PATH" "${checksum##*/}"
 }
 
-# checks, if the newest version is already installed. NOT TESTED!!!
-check_installed_version() {
-		
-    # needs more testing!
-	if [ -z "$(ls -A "$proton_path")" ] ; then
-        echo "Proton not installed."
-    else
-        for dir in "$proton_path"/* ; do
-            if [[ $(basename "$dir") == *$proton_version* ]] ; then
-
-                proton_installed=$(basename "$dir")
-                proton_installed=${proton_installed#*-}
-                break
-            fi
-        done
-    fi
-    
-	if [ -n "$proton_installed" ] ; then
-		echo "Installed Version: $proton_installed"
-	fi
-
-	if [[ "$proton_version" == "$proton_installed" ]] ; then
-		echo "Newest Version already installed"
-		exit 0
-	else
-		echo "Update available"
-		# link to the changelog on GitHub
-        echo "You may want to read the changelog first: https://github.com/GloriousEggroll/proton-ge-custom/releases/tag/$proton_version"
-	fi
-
-	read -rp "Install new version? [Y/n]: " answer
-	case "$answer" in
-		[Nn]|[Nn]o|[Nn]ein) update=false
-		;;
-		[YyJj]|[Yy]es|[Jj]a|*) update=true
-		;;
-	esac
-}
-
-# work in progress
-remove_download() {
-    rm -f "$download_path/$proton_archive"
-}
-
-check_prerequirements
-get_new_version
-check_installed_version
-download_proton
-unpack_proton
-remove_download
-
-echo 'Done, please restart Steam and follow these instructions:'
-echo 'https://github.com/GloriousEggroll/proton-ge-custom#enabling'
+check_prerequirements && \
+get_new_version && \
+check_installed_version && \
+download_proton && \
+unpack_proton && \
+printf "\nDone! Please restart Steam and follow these instructions:
+https://github.com/GloriousEggroll/proton-ge-custom#enabling\n"
