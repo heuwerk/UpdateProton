@@ -2,28 +2,28 @@
 # Name: updateproton.sh
 # Autor: heuwerk
 
-get_new_version() {
-	# definition of needed variables
-	readonly WEBSITE='https://github.com/GloriousEggroll/proton-ge-custom/tags'
-    readonly REGEX="<a h.*tag/.*[0-9]"
-    proton_version=''
+# definition of needed variables
+readonly WEBSITE='https://github.com/GloriousEggroll/proton-ge-custom/tags'
+readonly REGEX="<a h.*tag/.*[0-9]"
+readonly PROTON_PATH="$HOME/.steam/root/compatibilitytools.d"
 
+get_new_version() {
 	echo "Checking for new Proton Version..."
 
-    # downloads the website
-    # terminates the progam, if an error occured
-    wget "$WEBSITE" -q || ( echo "ERROR: No internet connection!" && exit 1 )
+	# downloads the website
+	# terminates the progam, if an error occures
+	wget "$WEBSITE" -q || ( echo "ERROR: No internet connection!" && exit 1 )
 
 	# extracts the newest Proton-Release
-	# cut to only get the Version-Number out of regex 
-	# ta
+	# grep: search for the regular expression in the downloaded file
+	# head: take only the first line
+	# cut: cut everything before the version number
 	proton_version=$(grep -o "$REGEX" tags | head -n1 | cut -d/ -f6)
 
 	# output of newest version
-    echo "Newest Version: $proton_version"
+	echo "Newest Version: $proton_version"
 
-
-	# deletes the file
+	# delete the file
 	rm tags
 }
 
@@ -48,19 +48,11 @@ download_proton() {
 }
 
 check_prerequirements() {
-	proton_path="$HOME/.steam/root/compatibilitytools.d"
-	
-	# is steam installed?
-	if [ ! -d "$HOME/.steam" ] ; then
-		echo "ERROR: Steam not installed!"
-		exit 1
-	fi
+	# check if .steam dir is present
+	[ -d "$HOME/.steam" ] || ( echo "ERROR: Steam not installed!" ; exit 1 )
 
-	# is the path created?
-	if [ ! -d "$proton_path" ] ; then
-		echo "Create directory..."
-		mkdir -p "$proton_path"
-	fi
+	# check if compatibilitytools dir is present
+	[ -d "$PROTON_PATH" ] || ( echo "Create directory..." ; mkdir -p "$PROTON_PATH" )
 }
 
 # Extracts the .tar.gz archive to the destination
