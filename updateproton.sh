@@ -4,7 +4,7 @@
 
 # definition of needed variables
 readonly WEBSITE='https://github.com/GloriousEggroll/proton-ge-custom/tags'
-readonly REGEX="<a h.*tag/.*[0-9]"
+readonly REGEX='<a c.*tag/.*[0-9]..$'
 readonly PROTON_PATH="$HOME/.steam/root/compatibilitytools.d"
 readonly PROTON_DOWNLOAD_PATH="$HOME/Downloads/vagrant_share"
 
@@ -27,7 +27,8 @@ get_new_version() {
 	# grep: search for the regular expression in the downloaded file
 	# head: take only the first line
 	# cut: cut everything before the version number
-	proton_version=$(grep -o "$REGEX" tags | head -n1 | cut -d/ -f6)
+	proton_version="$(grep -o "$REGEX" tags | head -n1 | cut -d/ -f6)"
+	proton_version="${proton_version%\"*}"
 
 	# output of newest version
 	printf "Newest version: %s\n" "$proton_version"
@@ -39,22 +40,8 @@ get_new_version() {
 # checks, if the newest version is already installed. NOT TESTED!!!
 check_installed_version() {
 
-    # needs more testing!
-	if [ "$(find "$PROTON_PATH" -maxdepth 1 | wc -l )" -le 1 ] ; then
-		printf "Proton not installed\n"
-    else
-        for dir in "$PROTON_PATH"/* ; do
-			case "$(basename "$dir")" in
-				*"$proton_version"*) proton_installed=$(basename "$dir")
-					proton_installed=${proton_installed#*-}
-					echo hallo2
-					break
-				;;
-			esac
-        done
-    fi
-
-    echo $proton_installed
+    proton_installed="$(find "$PROTON_PATH" -mindepth 1 -maxdepth 1 | sort -rV | head -n1 )"
+    proton_installed="${proton_installed##*/}"
 
 	[ "$proton_version" = "$proton_installed" ] && echo "Newest Version already installed" && exit 0
 
@@ -64,7 +51,7 @@ check_installed_version() {
 
     printf "Changelog: https://github.com/GloriousEggroll/proton-ge-custom/releases/tag/%s\n" "$proton_version"
 
-	printf "Install new version? [Y/n]: " ; read -r answer
+	printf "\nInstall new version? [Y/n]: " ; read -r answer
 	case "$answer" in
 		[YyJj]|[Yy]es|[Jj]a|"") update="1"
 		;;
@@ -89,7 +76,7 @@ download_proton() {
 
 		wget -q "$checksum" && sha512sum --quiet -c "${checksum##*/}" && printf "Verification OK"
 	else
-		echo "Installation aborted"; exit 1
+		printf "Installation aborted\n"; exit 1
 	fi
 }
 
@@ -97,23 +84,16 @@ download_proton() {
 unpack_proton() {
 	proton_archive="${file##*/}"
 	
-	[ -n "$proton_installed" ] && echo "Delete old entries? [y/N]: " && read -r cleanup
+	[ -n "$proton_installed" ] && echo "Delete ALL old versions? [y/N]: " && read -r cleanup
 
 	case "$cleanup" in
 		[YyJj]|[Yy]es|[Jj]a)
-			printf "Cleanup..."
-			for dir in "$PROTON_PATH"/* ; do
-                case "$(basename "$dir")" in
-                    *"$proton_version"*) rm -rf "$dir"
-                    ;;
-                esac
-			done
-			;;
+            printf "Cleanup..."
+			rm -rf "${PROTON_PATH:?}/*"
 	esac
 
 	tar -xzf "$PROTON_DOWNLOAD_PATH/$proton_archive" -C "$PROTON_PATH"
-	rm -rf "$PROTON_DOWNLOAD_PATH"
-	rm "${checksum##*/}"
+	rm -rf "$PROTON_DOWNLOAD_PATH" "${checksum##*/}"
 }
 
 check_prerequirements && \
@@ -121,4 +101,5 @@ get_new_version && \
 check_installed_version && \
 download_proton && \
 unpack_proton && \
-printf '\nDone, please restart Steam and follow these instructions:\nhttps://github.com/GloriousEggroll/proton-ge-custom#enabling\n'
+printf '\nDone! Please restart Steam and follow these instructions:\n
+    https://github.com/GloriousEggroll/proton-ge-custom#enabling\n'
