@@ -40,7 +40,7 @@ check_installed_version() {
     proton_installed="$(find "$PROTON_PATH" -mindepth 1 -maxdepth 1 | sort -V | tail -1 | cut -d/ -f7)"
     proton_installed="${proton_installed#*-}"
 
-	[ "$proton_version" = "$proton_installed" ] && echo "Newest version already installed" && exit 0
+	[ "$proton_version" = "$proton_installed" ] && printf "Newest version already installed\n" && exit 0
 
 	[ -n "$proton_installed" ] && \
         printf "Installed version: %s\n" "$proton_installed" || \
@@ -69,7 +69,7 @@ download_proton() {
 		
 		[ -e "$PROTON_DOWNLOAD_PATH/${file##*/}" ] || \
             ( wget "$file" -q --show-progress -P "$PROTON_DOWNLOAD_PATH" || \
-            ( echo "ERROR: No internet connection!" && exit 1 ))
+            ( printf "ERROR: No internet connection!\n" && exit 1 ))
 
 		wget -q "$checksum" && sha512sum --quiet -c "${checksum##*/}" && printf "Verification OK"
 	else
@@ -81,7 +81,7 @@ download_proton() {
 unpack_proton() {
 	proton_archive="${file##*/}"
 	
-	[ -n "$proton_installed" ] && echo "Delete ALL old versions? [y/N]: " && read -r cleanup
+	[ -n "$proton_installed" ] && printf "Delete ALL old versions? [y/N]: " && read -r cleanup
 
 	case "$cleanup" in
 		[YyJj]|[Yy]es|[Jj]a)
