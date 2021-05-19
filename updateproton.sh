@@ -86,7 +86,7 @@ unpack_proton() {
 	case "$cleanup" in
 		[YyJj]|[Yy]es|[Jj]a)
             printf "Cleanup..."
-			rm -rf "${PROTON_PATH:?}/*"
+			rm -rf "${PROTON_PATH:?}"/*
 	esac
 
 	# extracts the archive to the destination and deletes everything afterwards
