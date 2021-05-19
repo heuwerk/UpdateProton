@@ -71,7 +71,7 @@ download_proton() {
             ( wget "$file" -q --show-progress -P "$PROTON_DOWNLOAD_PATH" || \
             ( printf "ERROR: No internet connection!\n" && exit 1 ))
 
-		wget -q "$checksum" && sha512sum --quiet -c "${checksum##*/}" && printf "Verification OK"
+		wget -q "$checksum" && sha512sum --quiet -c "${checksum##*/}" && printf "Verification OK\n"
 	else
 		printf "Installation aborted\n"; exit 1
 	fi
