@@ -6,20 +6,20 @@
 readonly WEBSITE='https://github.com/GloriousEggroll/proton-ge-custom/tags'
 readonly REGEX='<a c.*tag/.*[0-9]..$'
 readonly PROTON_PATH="$HOME/.steam/root/compatibilitytools.d"
-readonly PROTON_DOWNLOAD_PATH="$HOME/Downloads/vagrant_share"
+readonly PROTON_DOWNLOAD_PATH="$HOME/vagrant_share"
 
 # checks if all required directories are present
 check_prerequirements() {
 	# check if .steam dir is present
-	[ -d "$HOME/.steam" ] || ( printf "ERROR: Steam not installed!\n" && exit 1 )
+	[ ! -d "$HOME/.steam" ] && printf "ERROR: Steam not installed!\n" && exit 1
 
 	# check if compatibilitytools dir is present
-	[ -d "$PROTON_PATH" ] || mkdir -p "$PROTON_PATH"
+	[ -d "$PROTON_PATH" ] || mkdir "$PROTON_PATH"
 }
 
 get_new_version() {
 	# downloads the website, terminates the progam, if an error occures
-	wget "$WEBSITE" -q || ( printf "ERROR: No internet connection!\n" && exit 1 )
+	! wget "$WEBSITE" -q && printf "ERROR: No internet connection!\n" && exit 1
 
 	# extracts the newest Proton release from tags file
 	# grep: search for the regular expression in the downloaded file
@@ -57,7 +57,7 @@ check_installed_version() {
 
 # download and verify the new proton version
 download_proton() {
-    cd "$HOME/Downloads" || exit 1
+    cd "$HOME" || exit 1
 
      # check if download dir is present
 	[ -d "$PROTON_DOWNLOAD_PATH" ] || mkdir -p "$PROTON_DOWNLOAD_PATH"
@@ -67,9 +67,8 @@ download_proton() {
 		file="${WEBSITE%/*}/releases/download/$proton_version/Proton-$proton_version.tar.gz"
 		checksum="${WEBSITE%/*}/releases/download/$proton_version/Proton-$proton_version.sha512sum"
 		
-		[ -e "$PROTON_DOWNLOAD_PATH/${file##*/}" ] || \
-            ( wget "$file" -q --show-progress -P "$PROTON_DOWNLOAD_PATH" || \
-            ( printf "ERROR: No internet connection!\n" && exit 1 ))
+    ! wget "$file" --show-progress -cqP "$PROTON_DOWNLOAD_PATH" && \
+      printf "ERROR: No internet connection!\n" && exit 1
 
 		wget -q "$checksum" && sha512sum --quiet -c "${checksum##*/}" && printf "Verification OK\n"
 	else
