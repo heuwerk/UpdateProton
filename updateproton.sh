@@ -6,7 +6,6 @@
 readonly WEBSITE='https://github.com/GloriousEggroll/proton-ge-custom/tags'
 readonly REGEX='<a c.*tag/.*[0-9]..$'
 readonly PROTON_PATH="$HOME/.steam/root/compatibilitytools.d"
-readonly PROTON_DOWNLOAD_PATH="$HOME/vagrant_share"
 
 # checks if all required directories are present
 check_prerequirements() {
@@ -59,15 +58,12 @@ check_installed_version() {
 download_proton() {
     cd "$HOME" || exit 1
 
-     # check if download dir is present
-	[ -d "$PROTON_DOWNLOAD_PATH" ] || mkdir -p "$PROTON_DOWNLOAD_PATH"
-
 	if [ -n "$update" ] ; then
 		# generates a Path that wget can Download
 		file="${WEBSITE%/*}/releases/download/$proton_version/Proton-$proton_version.tar.gz"
 		checksum="${WEBSITE%/*}/releases/download/$proton_version/Proton-$proton_version.sha512sum"
 		
-    ! wget "$file" --show-progress -cqP "$PROTON_DOWNLOAD_PATH" && \
+    ! wget "$file" --show-progress -cqP "$HOME" && \
       printf "ERROR: No internet connection!\n" && exit 1
 
 		wget -q "$checksum" && sha512sum --quiet -c "${checksum##*/}" && printf "Verification OK\n"
@@ -89,8 +85,8 @@ unpack_proton() {
 	esac
 
 	# extracts the archive to the destination and deletes everything afterwards
-	tar -xzf "$PROTON_DOWNLOAD_PATH/$proton_archive" -C "$PROTON_PATH"
-	rm -rf "$PROTON_DOWNLOAD_PATH" "${checksum##*/}"
+	tar -xzf "$HOME/$proton_archive" -C "$PROTON_PATH"
+	rm "${checksum##*/}"
 }
 
 check_prerequirements && \
