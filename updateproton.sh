@@ -86,7 +86,7 @@ unpack_proton() {
 
 	# extracts the archive to the destination and deletes everything afterwards
 	tar -xzf "$HOME/$proton_archive" -C "$PROTON_PATH"
-	rm "${checksum##*/}"
+	rm "$proton_archive" "${checksum##*/}"
 }
 
 check_prerequirements && \
