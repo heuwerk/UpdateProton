@@ -3,7 +3,7 @@ This simple shell script checks for the newest Version of Proton-GE-custom and i
 ## Usage
 Place this script in any user directory and run
 
-``./updateproton.sh`` (with e**x**exute rights), or
+``./updateproton.sh`` (with e**x**ecute rights), or
 
 ``sh updateproton.sh`` in your terminal
 
