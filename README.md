@@ -14,8 +14,6 @@ The script aims to use only native GNU-Tools, therefore it should work out of th
 - GNU coreutils
 
 ## Planned features
-- Dialog / whiptail
-- german translation
 - selection of the version to download
 
 ## Proton-GE-custom
