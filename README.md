@@ -7,7 +7,7 @@ Place this script in any user directory and run
 
 ``sh updateproton.sh`` in your terminal
 
-## Used Tools
+## Dependencies
 The script aims to use only native GNU-Tools, therefore it should work out of the box on any modern GNU/Linux Machine. It is also POSIX shell compliant.
 - wget
 - tar
