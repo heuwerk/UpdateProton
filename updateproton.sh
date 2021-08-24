@@ -36,6 +36,7 @@ get_new_version() {
 
 # checks, if the newest version is already installed. NOT TESTED!!!
 check_installed_version() {
+    #TODO: check if cut is needed
     proton_installed="$(find "$PROTON_PATH" -mindepth 1 -maxdepth 1 | sort -V | tail -1 | cut -d/ -f7)"
     proton_installed="${proton_installed#*-}"
 
