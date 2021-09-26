@@ -25,7 +25,7 @@ get_new_version() {
   proton_version="${proton_version##*/}"
 
 	# output of newest version
-	printf "Newest version:    %s\n" "$proton_version"
+	printf "Newest version: %s\n" "$proton_version"
 }
 
 # checks, if the newest version is already installed.
@@ -61,7 +61,7 @@ download_proton() {
     ! wget "$file" --show-progress -cqP "$HOME" && \
       printf "ERROR: No internet connection!\n" && exit 1
 
-		wget -q "$checksum" && sha512sum --quiet -c "${checksum##*/}" && printf "Verification OK\n"
+		wget "$checksum" -qO- | sha512sum --quiet -c  && printf "Verification OK\n"
 	else
 		printf "Installation aborted\n"; exit 1
 	fi
@@ -81,7 +81,7 @@ unpack_proton() {
 
 	# extracts the archive to the destination and deletes everything afterwards
 	tar -xzf "$HOME/$proton_archive" -C "$PROTON_PATH"
-	rm "$proton_archive" "${checksum##*/}"
+	rm "$proton_archive"
 }
 
 prerequirements && \
