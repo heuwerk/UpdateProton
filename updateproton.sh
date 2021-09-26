@@ -1,10 +1,10 @@
 #!/bin/sh
-# Name: updateproton.sh
-# Autor: heuwerk
+# name: updateproton.sh
+# author: heuwerk
 
 # definition of constant variables
 readonly WEBSITE='https://github.com/GloriousEggroll/proton-ge-custom/tags'
-readonly REGEX='<a c.*tag/.*[0-9]..$'
+readonly REGEX='<a c.*tag\/.*[0-9]..$'
 readonly PROTON_PATH="$HOME/.steam/root/compatibilitytools.d"
 
 # checks if all required directories are present
@@ -24,7 +24,8 @@ get_new_version() {
 	# grep: search for the regular expression in the downloaded file
 	# head: take only the first line
 	# cut: cut everything before the version number
-	proton_version="$(grep -o "$REGEX" tags | head -n1 | cut -d/ -f6)"
+	proton_version="$(grep -o "$REGEX" tags | head -n1)"
+  proton_version="${proton_version##*/}"
 	proton_version="${proton_version%\"*}"
 
 	# output of newest version
@@ -36,9 +37,9 @@ get_new_version() {
 
 # checks, if the newest version is already installed. NOT TESTED!!!
 check_installed_version() {
-    #TODO: check if cut is needed
-    proton_installed="$(find "$PROTON_PATH" -mindepth 1 -maxdepth 1 | sort -V | tail -1 | cut -d/ -f7)"
-    proton_installed="${proton_installed#*-}"
+  proton_installed="$(find "$PROTON_PATH" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1 )"
+  proton_installed="${proton_installed##*/}"
+  proton_installed="${proton_installed#*-}"
 
 	[ "$proton_version" = "$proton_installed" ] && printf "Newest version already installed\n" && exit 0
 
@@ -46,7 +47,7 @@ check_installed_version() {
         printf "Installed version: %s\n" "$proton_installed" || \
         printf "Proton not installed\n"
 
-    printf "Changelog: https://github.com/GloriousEggroll/proton-ge-custom/releases/tag/%s\n" "$proton_version"
+  printf "Changelog: https://github.com/GloriousEggroll/proton-ge-custom/releases/tag/%s\n" "$proton_version"
 
 	printf "\nInstall new version? [Y/n]: " ; read -r answer
 	case "$answer" in
@@ -81,7 +82,7 @@ unpack_proton() {
 
 	case "$cleanup" in
 		[YyJj]|[Yy]es|[Jj]a)
-            printf "Cleanup..."
+      printf "Cleanup..."
 			rm -rf "${PROTON_PATH:?}"/*
 	esac
 
