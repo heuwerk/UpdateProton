@@ -3,12 +3,12 @@
 # author: heuwerk
 
 # definition of constant variables
-readonly WEBSITE='https://github.com/GloriousEggroll/proton-ge-custom/tags'
-readonly REGEX='<a c.*tag\/.*[0-9]..$'
+readonly WEBSITE='https://github.com/GloriousEggroll/proton-ge-custom/releases/latest'
+readonly REGEX='tag\/.*GE-[0-9]*'
 readonly PROTON_PATH="$HOME/.steam/root/compatibilitytools.d"
 
 # checks if all required directories are present
-check_prerequirements() {
+prerequirements() {
 	# check if .steam dir is present
 	[ ! -d "$HOME/.steam" ] && printf "ERROR: Steam not installed!\n" && exit 1
 
@@ -18,24 +18,17 @@ check_prerequirements() {
 
 get_new_version() {
 	# downloads the website, terminates the progam, if an error occures
-	! wget "$WEBSITE" -q && printf "ERROR: No internet connection!\n" && exit 1
+	proton_version="$(! wget "$WEBSITE" -qO- | grep -m1 -o "$REGEX")" && 
+    printf "ERROR: No internet connection!\n" && exit 1
 
-	# extracts the newest Proton release from tags file
-	# grep: search for the regular expression in the downloaded file
-	# head: take only the first line
-	# cut: cut everything before the version number
-	proton_version="$(grep -o "$REGEX" tags | head -n1)"
+	# extracts the newest Proton release
   proton_version="${proton_version##*/}"
-	proton_version="${proton_version%\"*}"
 
 	# output of newest version
-	printf "Newest version: %s\n" "$proton_version"
-
-	# delete the file
-	rm tags
+	printf "Newest version:    %s\n" "$proton_version"
 }
 
-# checks, if the newest version is already installed. NOT TESTED!!!
+# checks, if the newest version is already installed.
 check_installed_version() {
   proton_installed="$(find "$PROTON_PATH" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1 )"
   proton_installed="${proton_installed##*/}"
@@ -62,8 +55,8 @@ download_proton() {
 
 	if [ -n "$update" ] ; then
 		# generates a Path that wget can Download
-		file="${WEBSITE%/*}/releases/download/$proton_version/Proton-$proton_version.tar.gz"
-		checksum="${WEBSITE%/*}/releases/download/$proton_version/Proton-$proton_version.sha512sum"
+		file="${WEBSITE%/*}/download/$proton_version/Proton-$proton_version.tar.gz"
+		checksum="${WEBSITE%/*}/download/$proton_version/Proton-$proton_version.sha512sum"
 		
     ! wget "$file" --show-progress -cqP "$HOME" && \
       printf "ERROR: No internet connection!\n" && exit 1
@@ -91,7 +84,7 @@ unpack_proton() {
 	rm "$proton_archive" "${checksum##*/}"
 }
 
-check_prerequirements && \
+prerequirements && \
 get_new_version && \
 check_installed_version && \
 download_proton && \
