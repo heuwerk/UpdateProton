@@ -4,7 +4,7 @@
 
 # definition of constant variables
 readonly WEBSITE='https://github.com/GloriousEggroll/proton-ge-custom/releases/latest'
-readonly REGEX='tag\/.*GE-[0-9]*'
+readonly REGEX='<a.*tag\/.*GE-[0-9]*"'
 readonly PROTON_PATH="$HOME/.steam/root/compatibilitytools.d"
 
 # checks if all required directories are present
@@ -23,6 +23,7 @@ get_new_version() {
 
 	# extracts the newest Proton release
   proton_version="${proton_version##*/}"
+  proton_version="${proton_version%\"*}"
 
 	# output of newest version
 	printf "Newest version: %s\n" "$proton_version"
