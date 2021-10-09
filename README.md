@@ -15,5 +15,8 @@ The script aims to use only native GNU-Tools, therefore it should work out of th
 - tar
 - GNU coreutils
 
+## Planned Features
+- implement wget2 as default and wget as fallback option
+
 ## Proton-GE-custom
 GitHub-Page: https://github.com/GloriousEggroll/proton-ge-custom
