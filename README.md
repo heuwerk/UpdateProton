@@ -7,6 +7,7 @@ This simple shell script checks for the newest version of *Proton-GE-custom* and
 - Create the required directories if they do not exist
 - Checksum verification
 - Delete all old installed versions, if desired
+- link to GitHub release notes
 - POSIX shell compliant
 
 ## Usage
