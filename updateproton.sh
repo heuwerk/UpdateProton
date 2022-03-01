@@ -4,7 +4,7 @@
 
 # definition of constant variables
 readonly WEBSITE='https://github.com/GloriousEggroll/proton-ge-custom/releases/latest'
-readonly REGEX='<a.*tag\/.*GE-[0-9]*"'
+readonly REGEX='tags/GE-Proton[0-9]*-[0-9]'
 readonly PROTON_PATH="${HOME}/.steam/root/compatibilitytools.d"
 
 # checks if all required directories are present
@@ -23,7 +23,6 @@ get_new_version() {
 
 	# extracts the newest Proton release
     proton_version="${proton_version##*/}"
-    proton_version="${proton_version%\"*}"
 
 	# output of newest version
 	printf "Newest version: %s\n" "${proton_version}"
@@ -58,8 +57,8 @@ download_proton() {
 
 	if [ -n "${update}" ] ; then
 		# generates a Path that wget can Download
-		file="${WEBSITE%/*}/download/${proton_version}/Proton-${proton_version}.tar.gz"
-		checksum="${WEBSITE%/*}/download/${proton_version}/Proton-${proton_version}.sha512sum"
+		file="${WEBSITE%/*}/download/${proton_version}/${proton_version}.tar.gz"
+		checksum="${WEBSITE%/*}/download/${proton_version}/${proton_version}.sha512sum"
 		
         ! wget "${file}" --show-progress -cqP "${HOME}" && \
         printf "ERROR: No internet connection!\n" && exit 1
