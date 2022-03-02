@@ -1,8 +1,6 @@
 # UpdateProton
 This simple shell script checks for the newest version of *Proton-GE-custom* and installs it.
 
-**Attention!** This script will not work, until this [Issue](https://github.com/heuwerk/UpdateProton/issues/5) is resolved!
-
 ## Features
 - Check for new versions of *Proton-GE-custom*
 - Interactive usage
