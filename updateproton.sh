@@ -32,7 +32,6 @@ get_new_version() {
 check_installed_version() {
     proton_installed="$(find "${PROTON_PATH}" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1 )"
     proton_installed="${proton_installed##*/}"
-    proton_installed="${proton_installed#*-}"
 
 	[ "${proton_version}" = "${proton_installed}" ] && printf "Newest version already installed\n" && exit 0
 
