@@ -4,7 +4,7 @@
 
 # definition of constant variables
 readonly WEBSITE='https://github.com/GloriousEggroll/proton-ge-custom/releases/latest'
-readonly REGEX='tags/GE-Proton[0-9]*-[0-9]'
+readonly REGEX='tags/GE-Proton[0-9]*-[0-9]*'
 readonly PROTON_PATH="${HOME}/.steam/root/compatibilitytools.d"
 
 # checks if all required directories are present
