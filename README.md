@@ -29,10 +29,10 @@ The problem with this approach is that wget2 is not pre-installed on most distro
 two transitional versions. However, only the wget2 version will get new features.
 
 ### Non-interactive / Script-Mode
-I want to make an additional *skript mode* that skips the interactive questions and uses default values. This mode would be optional and only accessable via command line parameter or variable values.
+I want to make an additional *script mode* that skips the interactive questions and uses default values. This mode would be optional and only accessible via command line parameter or variable values.
 
 ### Print download size
-Right now, it is required to look at the github changelog to see the file size, but I want to integrate that into this tool.
+Right now, it is required to look at the GitHub change log to see the file size, but I want to integrate that into this tool.
 
 ## Proton-GE-custom
 GitHub-Page: https://github.com/GloriousEggroll/proton-ge-custom
