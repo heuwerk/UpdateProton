@@ -4,7 +4,7 @@
 
 # definition of constant variables
 readonly WEBSITE='https://github.com/GloriousEggroll/proton-ge-custom/releases/latest'
-readonly REGEX='tags/GE-Proton[0-9]*-[0-9]*'
+readonly REGEX='tags/GE-Proton[[:digit:]]\+-[[:digit:]]\+'
 readonly PROTON_PATH="${HOME}/.steam/root/compatibilitytools.d"
 
 # checks if all required directories are present
@@ -43,10 +43,8 @@ check_installed_version() {
 
 	printf "\nInstall new version? [Y/n]: " ; read -r answer
 	case "${answer}" in
-		[YyJj]|[Yy]es|[Jj]a|"") update="1"
-		;;
-    *) exit 0
-    ;;
+		[YyJj]|[Yy]es|[Jj]a|"") update="1" ;;
+    *) exit 0 ;;
 	esac
 }
 
@@ -77,15 +75,53 @@ unpack_proton() {
 	case "${cleanup}" in
 		[YyJj]|[Yy]es|[Jj]a)
             printf "Cleanup..."
-			rm -rf "${PROTON_PATH:?}"/*
-    ;;
-    *) ;;
+			rm -rf "${PROTON_PATH:?}"/* ;;
+        *) ;;
 	esac
 
 	# extracts the archive to the destination and deletes everything afterwards
 	tar -xzf "${HOME}/${proton_archive}" -C "${PROTON_PATH}"
 	rm "${proton_archive}"
 }
+
+# script mode, downloads the latest version without disturbing the user
+script_mode() {
+    prerequirements
+
+	proton_version="$(! wget "${WEBSITE}" -qO- | grep -m1 -o "${REGEX}")" && exit 1
+    proton_version="${proton_version##*/}"
+    proton_installed="$(find "${PROTON_PATH}" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1 )"
+    proton_installed="${proton_installed##*/}"
+	file="${WEBSITE%/*}/download/${proton_version}/${proton_version}.tar.gz"
+	checksum="${WEBSITE%/*}/download/${proton_version}/${proton_version}.sha512sum"
+
+	[ "${proton_version}" = "${proton_installed}" ] && exit 0
+
+    ! wget "${file}" -cqP "${HOME}" && exit 1
+	wget "${checksum}" -qO- | sha512sum --quiet -c
+
+    proton_archive="${file##*/}"
+	tar -xzf "${HOME}/${proton_archive}" -C "${PROTON_PATH}"
+	rm "${proton_archive}"
+
+    exit 0
+}
+
+# display help
+usage() {
+    printf "Usage: ./updateproton.sh [-s] [-h]\n"
+    printf "\t-h\n\tDisplay this help\n\n"
+    printf "\t-s\n\tScript-Mode: Downloads the latest version without deleting old versions; does not output any hints\n"
+    exit 1
+}
+
+while getopts hs flag; do
+    case "${flag}" in
+        h) echo "haha" && usage ;;
+        s) echo "whoo" && script_mode ;;
+        *) ;;
+    esac
+done
 
 prerequirements && \
 get_new_version && \
