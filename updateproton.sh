@@ -84,7 +84,7 @@ unpack_proton() {
 	rm "${proton_archive}"
 }
 
-# script mode, downloads the latest version without disturbing the user
+# script mode, installs the latest version without disturbing the user
 script_mode() {
     prerequirements
 
@@ -97,6 +97,7 @@ script_mode() {
 
 	[ "${proton_version}" = "${proton_installed}" ] && exit 0
 
+    cd "${HOME}" || exit 1
     ! wget "${file}" -cqP "${HOME}" && exit 1
 	wget "${checksum}" -qO- | sha512sum --quiet -c
 
@@ -110,15 +111,17 @@ script_mode() {
 # display help
 usage() {
     printf "Usage: ./updateproton.sh [-s] [-h]\n"
-    printf "\t-h\n\tDisplay this help\n\n"
-    printf "\t-s\n\tScript-Mode: Downloads the latest version without deleting old versions; does not output any hints\n"
+    printf "\t-h\n\t\tDisplay this help\n\n"
+    printf "\t-s\n\t\tScript-Mode: Downloads the latest version without deleting old versions; does not output any hints\n"
+    printf "\n\tError Codes:\n\t\t0: Execution was successful, or latest version is already installed\n"
+    printf "\t\t1: An error occurred\n"
     exit 1
 }
 
 while getopts hs flag; do
     case "${flag}" in
-        h) echo "haha" && usage ;;
-        s) echo "whoo" && script_mode ;;
+        h) usage ;;
+        s) script_mode ;;
         *) ;;
     esac
 done
