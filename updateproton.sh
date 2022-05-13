@@ -17,7 +17,7 @@ prerequirements() {
 }
 
 get_new_version() {
-	# downloads the website, terminates the progam, if an error occures
+	# downloads the website, terminates the program, if an error occurs
 	proton_version="$(! wget "${WEBSITE}" -qO- | grep -m1 -o "${REGEX}")" && 
     printf "ERROR: No internet connection!\n" && exit 1
 
@@ -39,7 +39,7 @@ check_installed_version() {
         printf "Installed version: %s\n" "${proton_installed}" || \
         printf "Proton not installed\n"
 
-    printf "Changelog: https://github.com/GloriousEggroll/proton-ge-custom/releases/tag/%s\n" "${proton_version}"
+    printf "Change log: https://github.com/GloriousEggroll/proton-ge-custom/releases/tag/%s\n" "${proton_version}"
 
 	printf "\nInstall new version? [Y/n]: " ; read -r answer
 	case "${answer}" in
