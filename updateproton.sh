@@ -113,7 +113,7 @@ usage() {
     printf "Usage: ./updateproton.sh [-s] [-h]\n"
     printf "\t-h\n\t\tDisplay this help\n\n"
     printf "\t-s\n\t\tScript-Mode: Downloads the latest version without deleting old versions; does not output any hints\n"
-    printf "\n\tError Codes:\n\t\t0: Execution was successful, or latest version is already installed\n"
+    printf "\n\tReturn codes:\n\t\t0: Execution was successful, or latest version is already installed\n"
     printf "\t\t1: An error occurred\n"
     exit 1
 }
