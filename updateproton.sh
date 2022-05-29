@@ -10,7 +10,7 @@ readonly PROTON_PATH="${HOME}/.steam/root/compatibilitytools.d"
 # checks if all required directories are present
 prerequirements() {
 	# check if .steam dir is present
-	[ ! -d "${HOME}/.steam" ] && printf "ERROR: Steam not installed!\n" && exit 1
+    [ ! -d "${HOME}/.steam" ] && ! command -v steam && printf "ERROR: Steam not installed!\n" && exit 1
 
 	# check if compatibilitytools dir is present
 	[ -d "${PROTON_PATH}" ] || mkdir "${PROTON_PATH}"
@@ -19,13 +19,13 @@ prerequirements() {
 get_new_version() {
 	# downloads the website, terminates the program, if an error occurs
 	proton_version="$(! wget "${WEBSITE}" -qO- | grep -m1 -o "${REGEX}")" && 
-    printf "ERROR: No internet connection!\n" && exit 1
+    printf "ERROR: Could not fetch latest version!\n" && exit 1
 
 	# extracts the newest Proton release
     proton_version="${proton_version##*/}"
 
 	# output of newest version
-	printf "Newest version: %s\n" "${proton_version}"
+	printf "Latest version: %s\n" "${proton_version}"
 }
 
 # checks, if the newest version is already installed.
@@ -33,13 +33,13 @@ check_installed_version() {
     proton_installed="$(find "${PROTON_PATH}" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1 )"
     proton_installed="${proton_installed##*/}"
 
-	[ "${proton_version}" = "${proton_installed}" ] && printf "Newest version already installed\n" && exit 0
+	[ "${proton_version}" = "${proton_installed}" ] && printf "Latest version already installed\n" && exit 0
 
 	[ -n "${proton_installed}" ] && \
         printf "Installed version: %s\n" "${proton_installed}" || \
         printf "Proton not installed\n"
 
-    printf "Change log: https://github.com/GloriousEggroll/proton-ge-custom/releases/tag/%s\n" "${proton_version}"
+    printf "Changelog: https://github.com/GloriousEggroll/proton-ge-custom/releases/tag/%s\n" "${proton_version}"
 
 	printf "\nInstall new version? [Y/n]: " ; read -r answer
 	case "${answer}" in
@@ -53,12 +53,12 @@ download_proton() {
     cd "${HOME}" || exit 1
 
 	if [ -n "${update}" ] ; then
-		# generates a Path that wget can Download
+		# generates a URI that wget can Download
 		file="${WEBSITE%/*}/download/${proton_version}/${proton_version}.tar.gz"
 		checksum="${WEBSITE%/*}/download/${proton_version}/${proton_version}.sha512sum"
 		
         ! wget "${file}" --show-progress -cqP "${HOME}" && \
-        printf "ERROR: No internet connection!\n" && exit 1
+        printf "ERROR: Download failed!\n" && exit 1
 
 		wget "${checksum}" -qO- | sha512sum --quiet -c  && printf "Verification OK\n"
 	else
