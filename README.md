@@ -1,15 +1,13 @@
 # UpdateProton
-This simple shell script checks for the newest version of *Proton-GE-custom* and installs it.
+A simple shell script that checks for and installs the latest version of *GE-Proton*.
 
 ## Features
-- Check for new versions of *Proton-GE-custom*
+- Check for latest versions of *GE-Proton*
 - Interactive usage
-- Create the required directories if they do not exist
 - Checksum verification
 - Delete all old installed versions, if desired
-- link to GitHub release notes
+- link to release notes
 - POSIX shell compliant
-- Script-Mode
 
 ## Usage
 Place this script in any user directory and run
@@ -19,18 +17,21 @@ Place this script in any user directory and run
 ``sh updateproton.sh`` in your terminal
 
 ## Dependencies
-The script aims to use only native GNU-Tools, therefore it should work out of the box on any modern GNU/Linux machine. It is also POSIX shell compliant.
+The script aims to use only native Linux tools, therefore it should work out of the box on any modern Linux machine. It is also POSIX shell compliant.
 - wget
 - tar
 - GNU coreutils
 
 ## Planned Features
-### Drop old wget tool and use wget2 instead
-The problem with this approach is that wget2 is not pre-installed on most distros, so I plan to maintain
-two transitional versions. However, only the wget2 version will get new features.
+### Drop old wget tool and use curl instead
+The problem with this approach is that curl is not pre-installed on most distros, so I plan to maintain
+two transitional versions. However, only the curl version will get new features.
 
 ### Print download size
-Right now, it is required to look at the GitHub change log to see the file size, but I want to integrate that into this tool.
+Right now, it is required to look at the GitHub Changelog to see the file size, but I want to integrate that into this tool.
 
-## Proton-GE-custom
-GitHub-Page: https://github.com/GloriousEggroll/proton-ge-custom
+### Remove as many GNU tools, as possible
+I would like to keep this program as universal as possible. Therefore, in the long run, as many GNU tools as possible will be removed.
+
+## GE-Proton
+GitHub Page: https://github.com/GloriousEggroll/proton-ge-custom
