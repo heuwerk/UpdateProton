@@ -23,15 +23,13 @@ The script aims to use only native Linux tools, therefore it should work out of 
 - GNU coreutils
 
 ## Planned Features
-### Drop old wget tool and use curl instead
-The problem with this approach is that curl is not pre-installed on most distros, so I plan to maintain
-two transitional versions. However, only the curl version will get new features.
+
+### Drop old wget tool and use wget2 instead
+The problem with this approach is that wget2 is not preinstalled on most distros, so I plan to maintain
+two transitional versions. However, only the wget2 version will get new features.
 
 ### Print download size
 Right now, it is required to look at the GitHub Changelog to see the file size, but I want to integrate that into this tool.
-
-### Remove as many GNU tools, as possible
-I would like to keep this program as universal as possible. Therefore, in the long run, as many GNU tools as possible will be removed.
 
 ## GE-Proton
 GitHub Page: https://github.com/GloriousEggroll/proton-ge-custom
