@@ -8,7 +8,7 @@ readonly REGEX='tags/GE-Proton[[:digit:]]\+-[[:digit:]]\+'
 readonly PROTON_PATH="${HOME}/.steam/root/compatibilitytools.d"
 
 # checks if all required directories are present
-prerequirements() {
+check_requirements() {
 	# check if .steam dir is present
     [ ! -d "${HOME}/.steam" ] && ! command -v steam && printf "ERROR: Steam not installed!\n" && exit 1
 
@@ -39,7 +39,7 @@ check_installed_version() {
         printf "Installed version: %s\n" "${proton_installed}" || \
         printf "Proton not installed\n"
 
-    printf "Changelog: https://github.com/GloriousEggroll/proton-ge-custom/releases/tag/%s\n" "${proton_version}"
+    printf "Changelog: https://github.com/GloriousEggroll/proton-ge-custom/releases/tag/%s \n" "${proton_version}"
 
 	printf "\nInstall new version? [Y/n]: " ; read -r answer
 	case "${answer}" in
@@ -53,7 +53,7 @@ download_proton() {
     cd "${HOME}" || exit 1
 
 	if [ -n "${update}" ] ; then
-		# generates a URI that wget can Download
+		# generates a URI that wget can download
 		file="${WEBSITE%/*}/download/${proton_version}/${proton_version}.tar.gz"
 		checksum="${WEBSITE%/*}/download/${proton_version}/${proton_version}.sha512sum"
 		
@@ -84,10 +84,10 @@ unpack_proton() {
 	rm "${proton_archive}"
 }
 
-prerequirements && \
+check_requirements && \
 get_new_version && \
 check_installed_version && \
 download_proton && \
 unpack_proton && \
 printf "\nDone! Please restart Steam and follow these instructions:
-https://github.com/GloriousEggroll/proton-ge-custom#enabling\n"
+https://github.com/GloriousEggroll/proton-ge-custom#enabling \n"
