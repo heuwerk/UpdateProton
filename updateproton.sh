@@ -9,7 +9,7 @@ readonly PROTON_PATH="${HOME}/.steam/root/compatibilitytools.d"
 
 # checks if all required directories are present
 check_requirements() {
-	# check if .steam dir is present
+	# check if .steam dir is present and steam is installed
     [ ! -d "${HOME}/.steam" ] && ! command -v steam && printf "ERROR: Steam not installed!\n" && exit 1
 
 	# check if compatibilitytools dir is present
