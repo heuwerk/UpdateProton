@@ -19,13 +19,16 @@ check_requirements() {
 get_new_version() {
 	# downloads the website, terminates the program, if an error occurs
 	proton_version="$(! wget "${WEBSITE}" -qO- | grep -m1 -o "${REGEX}")" && 
-    printf "ERROR: Could not fetch latest version!\n" && exit 1
+        printf "ERROR: Could not fetch latest version!\n" && exit 1
+
+    download_size="$(! wget "${WEBSITE}" -qO- | grep -o '[0-9]\+ MB')" &&
+        printf "WARNING: Could not fetch download size.\n"
 
 	# extracts the newest Proton release
     proton_version="${proton_version##*/}"
 
 	# output of newest version
-	printf "Latest version: %s\n" "${proton_version}"
+    printf "Latest version: %s (%s)\n" "${proton_version}" "${download_size}"
 }
 
 # checks, if the newest version is already installed.
@@ -41,7 +44,7 @@ check_installed_version() {
 
     printf "Changelog: https://github.com/GloriousEggroll/proton-ge-custom/releases/tag/%s \n" "${proton_version}"
 
-	printf "\nInstall new version? [Y/n]: " ; read -r answer
+    printf "\nInstall new version? [Y/n]: " ; read -r answer
 	case "${answer}" in
 		[YyJj]|[Yy]es|[Jj]a|"") update="1" ;;
     *) exit 0 ;;
