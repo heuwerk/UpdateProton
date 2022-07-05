@@ -8,6 +8,7 @@ A simple shell script that checks for and installs the latest version of *GE-Pro
 - Delete all old installed versions, if desired
 - link to release notes
 - POSIX shell compliant
+- Display download size
 
 ## Usage
 Place this script in any user directory and run
