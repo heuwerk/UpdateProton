@@ -28,7 +28,7 @@ The script aims to use only native Linux tools, therefore it should work out of 
 - GNU coreutils
 
 ## Planned Features
-*Sorted by priority *
+*Sorted by priority*
 
 ### Support for the Steam Flatpak
 At this time, Steam is only supported as a distro package (~/.steam must be present).
