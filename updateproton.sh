@@ -45,7 +45,7 @@ check_installed_version() {
     printf "\nChangelog: https://github.com/GloriousEggroll/proton-ge-custom/releases/tag/%s \n" "${proton_version}"
     printf "Download size: %s\n" "${download_size}"
 
-    printf "\nInstall new version? [Y/n]: " "${download_size}"; read -r answer
+    printf "\nInstall new version? [Y/n]: " ; read -r answer
 	case "${answer}" in
 		[YyJj]|[Yy]es|[Jj]a|"") update="1" ;;
     *) exit 0 ;;
