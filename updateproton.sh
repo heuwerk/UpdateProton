@@ -4,7 +4,7 @@
 
 # definition of constant variables
 readonly WEBSITE='https://github.com/GloriousEggroll/proton-ge-custom/releases/latest'
-readonly REGEX='tags/GE-Proton[[:digit:]]\+-[[:digit:]]\+'
+readonly REGEX='GE-Proton[[:digit:]]\+-[[:digit:]]\+'
 readonly PROTON_PATH="${HOME}/.steam/root/compatibilitytools.d"
 
 # checks if all required directories are present
@@ -18,10 +18,10 @@ check_requirements() {
 
 get_new_version() {
 	# downloads the website, terminates the program, if an error occurs
-	proton_version="$(! wget "${WEBSITE}" -qO- | grep -m1 -o "${REGEX}")" && 
+	proton_version="$(! wget "${WEBSITE}" -qO- | grep -om1 "${REGEX}")" &&
         printf "ERROR: Could not fetch latest version!\n" && exit 1
 
-    download_size="$(! wget "${WEBSITE}" -qO- | grep -o '[0-9]\+ MB')" &&
+    download_size="$(! wget "${WEBSITE}" -qO- | grep -o '[[:digit:]]\+ MB')" &&
         printf "INFO: Could not fetch download size.\n"
 
 	# extracts the newest Proton release
