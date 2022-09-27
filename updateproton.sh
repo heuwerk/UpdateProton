@@ -21,7 +21,7 @@ get_new_version() {
 	proton_version="$(! wget "${WEBSITE}" -qO- | grep -om1 "${REGEX}")" &&
         printf "ERROR: Could not fetch latest version!\n" && exit 1
 
-    download_size="$(! wget "${WEBSITE}" -qO- | grep -o '[[:digit:]]\+ MB')" &&
+    download_size="$(! wget "https://github.com/GloriousEggroll/proton-ge-custom/releases/expanded_assets/${proton_version}" -qO- | grep -o '[[:digit:]]\+ MB')" &&
         printf "INFO: Could not fetch download size.\n"
 
 	# extracts the newest Proton release
