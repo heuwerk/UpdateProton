@@ -84,6 +84,7 @@ unpack_proton() {
 	esac
 
 	# extracts the archive to the destination and deletes everything afterwards
+    printf "Extract..."
 	tar -xzf "${HOME}/${proton_archive}" -C "${PROTON_PATH}"
 	rm "${proton_archive}"
 }
