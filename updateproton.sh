@@ -1,6 +1,21 @@
 #!/bin/sh
-# name: updateproton.sh
-# author: heuwerk
+# updateproton.sh - A simple shell script to update GE-Proton.
+# Copyright (C) 2022    Jan Heurich
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or 
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
+# Author e-mail address: heuwerk@mailbox.org
 
 # definition of constant variables
 readonly WEBSITE='https://github.com/GloriousEggroll/proton-ge-custom/releases/latest'
@@ -78,13 +93,13 @@ unpack_proton() {
 
 	case "${cleanup}" in
 		[YyJj]|[Yy]es|[Jj]a)
-            printf "Cleanup..."
+            printf "Cleanup...\n"
 			rm -rf "${PROTON_PATH:?}"/* ;;
         *) ;;
 	esac
 
 	# extracts the archive to the destination and deletes everything afterwards
-    printf "Extract..."
+    printf "Extract...\n"
 	tar -xzf "${HOME}/${proton_archive}" -C "${PROTON_PATH}"
 	rm "${proton_archive}"
 }
