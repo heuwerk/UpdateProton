@@ -1,11 +1,11 @@
 #!/bin/sh
 # updateproton.sh - A simple shell script to update GE-Proton.
-# Copyright (C) 2022    Jan Heurich
-#
+# Copyright (C) 2023  Jan Heurich
+
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or 
-# any later version.
+# (at your option) any later version.
 #
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -21,6 +21,12 @@
 readonly WEBSITE='https://github.com/GloriousEggroll/proton-ge-custom/releases/latest'
 readonly REGEX='GE-Proton[[:digit:]]\+-[[:digit:]]\+'
 readonly PROTON_PATH="${HOME}/.steam/root/compatibilitytools.d"
+
+# Copyright and disclaimer notice
+printf "updateproton.sh  Copyright (C) 2023  Jan Heurich\n"
+printf "This program comes with ABSOLUTELY NO WARRANTY.\n"
+printf "This is free software, and you are welcome to redistribute it\n"
+printf "under certain conditions.\n\n"
 
 # checks if all required directories are present
 check_requirements() {

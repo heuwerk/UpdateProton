@@ -1,6 +1,12 @@
 # UpdateProton
 A simple shell script that checks for and installs the latest version of *GE-Proton*.
 
+**Note:**
+Due to the renaming of the Upstream project from `Proton-x.xx-GE` to `GE-Proton`, 
+the query of the installed versions is not performed correctly.
+
+It is recommended to delete all Proton-GE version before GE-Proton7 for the script to work without errors.
+
 ## Features
 - Check for latest versions of *GE-Proton*
 - Interactive usage
