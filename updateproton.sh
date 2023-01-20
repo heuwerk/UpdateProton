@@ -22,12 +22,6 @@ readonly WEBSITE='https://github.com/GloriousEggroll/proton-ge-custom/releases/l
 readonly REGEX='GE-Proton[[:digit:]]\+-[[:digit:]]\+'
 readonly PROTON_PATH="${HOME}/.steam/root/compatibilitytools.d"
 
-# Copyright and disclaimer notice
-printf "updateproton.sh  Copyright (C) 2023  Jan Heurich\n"
-printf "This program comes with ABSOLUTELY NO WARRANTY.\n"
-printf "This is free software, and you are welcome to redistribute it\n"
-printf "under certain conditions.\n\n"
-
 # checks if all required directories are present
 check_requirements() {
 	# check if .steam dir is present and steam is installed
