@@ -91,13 +91,13 @@ unpack_proton() {
 
   case "${cleanup}" in
     [YyJj]|[Yy]es|[Jj]a)
-      printf "Cleanup..."
+      printf "Cleanup...\n"
       rm -rf "${PROTON_PATH:?}"/* ;;
     *) ;;
   esac
 
   # extracts the archive to the destination and deletes everything afterwards
-    printf "\nExtract..."
+    printf "Extract...\n"
   tar -xzf "${HOME}/${proton_archive}" -C "${PROTON_PATH}"
   rm "${proton_archive}"
 }
@@ -107,5 +107,5 @@ get_new_version &&
 check_installed_version &&
 download_proton &&
 unpack_proton &&
-printf "\n\nDone! Please restart Steam and follow these instructions:
+printf "\nDone! Please restart Steam and follow these instructions:
 https://github.com/GloriousEggroll/proton-ge-custom#enabling \n"
