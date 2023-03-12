@@ -16,6 +16,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 # Author e-mail address: heuwerk@mailbox.org
+# Project repository: https://www.github.com/heuwerk/UpdateProton
 
 # definition of constant variables
 readonly WEBSITE='https://github.com/GloriousEggroll/proton-ge-custom/releases/latest'
