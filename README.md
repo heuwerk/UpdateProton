@@ -29,7 +29,7 @@ You can also download the latest version from the [main branch](https://github.c
 
 ## Dependencies
 The script aims to use only native Linux tools, therefore it should work out of the box on any modern Linux machine. It is also POSIX shell compliant.
-- wget
+- curl
 - tar
 - GNU coreutils
 
