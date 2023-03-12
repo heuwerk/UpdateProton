@@ -26,7 +26,7 @@ readonly PROTON_PATH="${HOME}/.steam/root/compatibilitytools.d"
 # checks if all required directories are present
 check_requirements() {
   # check if .steam dir is present and steam is installed
-  [ ! -d "${HOME}/.steam" ] && ! command -v steam 1>/dev/null && printf "ERROR: Steam not installed!\n" && exit 1
+  [ ! -d "${HOME}/.steam" ] && printf "ERROR: ~/.steam directory not found!\n" && exit 1
 
   # check if compatibilitytools dir is present
   [ -d "${PROTON_PATH}" ] || mkdir "${PROTON_PATH}"
@@ -34,10 +34,10 @@ check_requirements() {
 
 get_new_version() {
   # downloads the website, terminates the program, if an error occurs
-  proton_version="$(! wget "${WEBSITE}" -qO- | grep -om1 "${REGEX}")" &&
+  proton_version="$(! curl -Ls "${WEBSITE}" | grep -om1 "${REGEX}")" &&
     printf "ERROR: Could not fetch latest version!\n" && exit 1
 
-  download_size="$(! wget "https://github.com/GloriousEggroll/proton-ge-custom/releases/expanded_assets/${proton_version}" -qO- | grep -o '[[:digit:]]\+ MB')" &&
+  download_size="$(! curl -Ls "https://github.com/GloriousEggroll/proton-ge-custom/releases/expanded_assets/${proton_version}" | grep -o '[[:digit:]]\+ MB')" &&
     printf "INFO: Could not fetch download size.\n"
 
   # extracts the newest Proton release
@@ -74,14 +74,15 @@ check_installed_version() {
 download_proton() {
   cd "${HOME}" || exit 1
 
-  # generates a URI that wget can download
+  # generates a URI that curl can download
   file="${WEBSITE%/*}/download/${proton_version}/${proton_version}.tar.gz"
   checksum="${WEBSITE%/*}/download/${proton_version}/${proton_version}.sha512sum"
 
-  ! wget "${file}" --show-progress -cqP "${HOME}" && \
-  printf "ERROR: Download failed!\n" && exit 1
+  ! curl -LOC- --http2 "${file}" --output-dir "${HOME}" &&
+    printf "ERROR: Download failed!\n" && exit 1
 
-  wget "${checksum}" -qO- | sha512sum --quiet -c  && printf "Verification OK\n"
+  printf "Verify Checksum...\n"
+  curl -Ls "${checksum}" | sha512sum -c
 }
 
 # Extracts the .tar.gz archive to the destination
