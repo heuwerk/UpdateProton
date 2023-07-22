@@ -66,7 +66,6 @@ check_installed_version() {
     [YyJj]|[Yy]es|[Jj]a|"") ;;
       *)
       printf "Installation aborted\n"; exit 1
-            exit 0 ;;
   esac
 }
 
