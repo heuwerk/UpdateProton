@@ -20,7 +20,6 @@
 
 # definition of constant variables
 readonly WEBSITE='https://github.com/GloriousEggroll/proton-ge-custom/releases/latest'
-readonly REGEX='GE-Proton[[:digit:]]\+-[[:digit:]]\+'
 readonly PROTON_PATH="${HOME}/.steam/root/compatibilitytools.d"
 
 # checks if all required directories are present
@@ -34,8 +33,7 @@ check_requirements() {
 
 get_new_version() {
   # downloads the website, terminates the program, if an error occurs
-  proton_version="$(! curl -Ls "${WEBSITE}" | grep -om1 "${REGEX}")" &&
-    printf "ERROR: Could not fetch latest version!\n" && exit 1
+  proton_version="$(curl -sw %{redirect_url}% "${WEBSITE}" )"
 
   download_size="$(! curl -Ls "https://github.com/GloriousEggroll/proton-ge-custom/releases/expanded_assets/${proton_version}" | grep -o '[[:digit:]]\+ MB')" &&
     printf "INFO: Could not fetch download size.\n"
@@ -74,8 +72,8 @@ download_proton() {
   cd "${HOME}" || exit 1
 
   # generates a URI that curl can download
-  file="${WEBSITE%/*}/download/${proton_version}/${proton_version}.tar.gz"
-  checksum="${WEBSITE%/*}/download/${proton_version}/${proton_version}.sha512sum"
+  file="${WEBSITE}/download/${proton_version}.tar.gz"
+  checksum="${WEBSITE}/download/${proton_version}.sha512sum"
 
   ! curl -LOC- --http2 "${file}" --output-dir "${HOME}" &&
     printf "ERROR: Download failed!\n" && exit 1
