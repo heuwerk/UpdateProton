@@ -15,7 +15,7 @@ It is recommended to delete all Proton-GE version before GE-Proton7 for the scri
 - link to release notes
 - POSIX shell compliant
 - Should run on all major Linux Distributions (tested with Fedora and Debian)
-- Display download size
+- ~Display download size~ temporarily not available
 
 ## Usage
 1. Download the latest version of the script from the [release page](https://github.com/heuwerk/UpdateProton/releases).
