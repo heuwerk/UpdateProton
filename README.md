@@ -44,10 +44,6 @@ I would like to support the flatpak version of Steam in the future.
 At the end of the script, the user is alerted to restart Steam.
 It should be possible to restart Steam automatically.
 
-### Drop old wget tool and use wget2 instead
-The problem with this approach is that wget2 is not pre-installed on most distros, so I plan to maintain
-two transitional versions. However, only the wget2 version will get new features.
-
 ### Create non-user version for systemd unit
 I plan to create a version of this script that the user does not interact with directly, but which can be used as a systemd unit.
 This will be a separate file, since a lot of code that is currently used mainly for user queries is not needed.
