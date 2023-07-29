@@ -33,13 +33,13 @@ check_requirements() {
 
 get_new_version() {
   # downloads the website, terminates the program, if an error occurs
-  proton_version="$(curl -sw %{redirect_url}% "${WEBSITE}" )"
-
-  download_size="$(! curl -Ls "https://github.com/GloriousEggroll/proton-ge-custom/releases/expanded_assets/${proton_version}" | grep -o '[[:digit:]]\+ MB')" &&
-    printf "INFO: Could not fetch download size.\n"
+  proton_version="$(curl -Ssw "%{redirect_url}" "${WEBSITE}")" || exit 1
 
   # extracts the newest Proton release
   proton_version="${proton_version##*/}"
+
+  # disabled download size because GitHub broke it
+  #download_size="$(curl -Lsw "%{size_download}" "${WEBSITE}/download/${proton_version}.tar.gz")"
 
   # output of newest version
   printf "Latest version: %s\n" "${proton_version}"
@@ -56,8 +56,8 @@ check_installed_version() {
     printf "Installed version: %s\n" "${proton_installed}" || \
     printf "GE-Proton is not installed\n"
 
-    printf "\nChangelog: https://github.com/GloriousEggroll/proton-ge-custom/releases/tag/%s \n" "${proton_version}"
-    printf "Download size: %s\n" "${download_size}"
+    printf "\nChangelog: %s \n" "${WEBSITE}"
+    # printf "Download size: %s\n" "${download_size}"
 
     printf "\nInstall new version? [Y/n]: " ; read -r answer
   case "${answer}" in
@@ -69,17 +69,18 @@ check_installed_version() {
 
 # download and verify the new proton version
 download_proton() {
-  cd "${HOME}" || exit 1
+  [ -z "${XDG_CACHE_HOME}" ] && XDG_CACHE_HOME="${HOME}/.cache"
+  mkdir -p "${XDG_CACHE_HOME}/updateproton"
+  cd "${XDG_CACHE_HOME}/updateproton" || exit 1
 
   # generates a URI that curl can download
   file="${WEBSITE}/download/${proton_version}.tar.gz"
   checksum="${WEBSITE}/download/${proton_version}.sha512sum"
 
-  ! curl -LOC- --http2 "${file}" --output-dir "${HOME}" &&
-    printf "ERROR: Download failed!\n" && exit 1
+  curl -LOC- --http2 "${file}"
 
   printf "Verify Checksum...\n"
-  curl -Ls "${checksum}" | sha512sum -c
+  curl -LSs "${checksum}" | sha512sum -c
 }
 
 # Extracts the .tar.gz archive to the destination
@@ -96,8 +97,8 @@ unpack_proton() {
   esac
 
   # extracts the archive to the destination and deletes everything afterwards
-    printf "Extract...\n"
-  tar -xzf "${HOME}/${proton_archive}" -C "${PROTON_PATH}"
+  printf "Extract...\n"
+  tar xzf "${proton_archive}" -C "${PROTON_PATH}"
   rm "${proton_archive}"
 }
 
