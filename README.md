@@ -5,7 +5,7 @@ A simple shell script that checks for and installs the latest version of *GE-Pro
 Due to the renaming of the Upstream project from `Proton-x.xx-GE` to `GE-Proton`, 
 the query of the installed versions is not performed correctly.
 
-It is recommended to delete all Proton-GE version before GE-Proton7 for the script to work without errors.
+It is recommended to delete all Proton-GE versions prior GE-Proton7 for the script to work as expected.
 
 ## Features
 - Check for latest versions of *GE-Proton*
@@ -14,7 +14,7 @@ It is recommended to delete all Proton-GE version before GE-Proton7 for the scri
 - Delete all old installed versions, if desired
 - link to release notes
 - POSIX shell compliant
-- Should run on all major Linux Distributions (tested with Fedora and Debian)
+- Should run on all major GNU/Linux Distributions (tested with Fedora and Debian)
 - ~Display download size~ temporarily not available
 
 ## Usage
