@@ -36,11 +36,13 @@ The script aims to use only native GNU tools, therefore it should work out of th
 ## Planned Features
 *Sorted by priority*
 
-### Support for the Steam Flatpak
+### [Support for the Steam Flatpak](https://github.com/heuwerk/UpdateProton/issues/15)
+
 At this time, Steam is only supported as a distro package (~/.steam must be present).
 I would like to support the flatpak version of Steam in the future.
 
-### Steam restart support
+### [Steam restart support](https://github.com/heuwerk/UpdateProton/issues/16)
+
 At the end of the script, the user is alerted to restart Steam.
 It should be possible to restart Steam automatically.
 
