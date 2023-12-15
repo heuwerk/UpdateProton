@@ -36,7 +36,7 @@ The script aims to use only native GNU tools, therefore it should work out of th
 ## Planned Features
 *Sorted by priority*
 
-### [Support for the Steam Flatpak](https://github.com/heuwerk/UpdateProton/issues/15)
+### ~[Support for the Steam Flatpak](https://github.com/heuwerk/UpdateProton/issues/15)~
 
 At this time, Steam is only supported as a distro package (~/.steam must be present).
 I would like to support the flatpak version of Steam in the future.
