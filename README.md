@@ -35,8 +35,19 @@ It is recommended to delete all Proton-GE versions prior GE-Proton7 for the scri
 ## Dependencies
 The script aims to use only common CLI tools, therefore it should work out of the box on any modern GNU/Linux machine. It is also POSIX shell compliant.
 - curl
+- find
+- grep
 - tar
 - GNU coreutils
+  - `cut`
+  - `mkdir`
+  - `printf`
+  - `rm`
+  - `sha512sum`
+  - `sort`
+  - `tail`
+  - `test`
+  - `tr`
 
 ## Planned Features
 *Sorted by priority*
