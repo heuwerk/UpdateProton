@@ -43,7 +43,7 @@ check_requirements() {
 
     # exit if no Installation was found
     [ -z "${proton_path}" ] &&
-        printf "ERROR: No Steam Installation found!\n" && exit
+        printf "ERROR: No Steam Installation found!\n" && exit 1
 
     # create compatibilitytools.d directory, if not present
     [ -d "${proton_path}" ] || mkdir "${proton_path}"
