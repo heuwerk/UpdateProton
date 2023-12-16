@@ -25,16 +25,20 @@ readonly PROTON_FLATPAK_PATH="${HOME}/.var/app/com.valvesoftware.Steam/data/Stea
 
 # checks if all required directories are present
 check_requirements() {
+    # check if curl is installed
+    ! command -v curl >/dev/null &&
+        printf "ERROR: curl is not installed!\n" && exit 1
+
     # check if .steam dir is present and steam is installed
     [ -d "${HOME}/.steam" ] &&
         command -v steam >/dev/null &&
-        printf "Detected native Steam Installation\n" &&
+        printf "INFO: Found native Steam package\n" &&
         proton_path="${PROTON_NATIVE_PATH}"
 
     # check for flatpak
     command -v flatpak > /dev/null &&
         flatpak info com.valvesoftware.Steam >/dev/null 2>&1 &&
-        printf "Detected Steam Flatpak\n" &&
+        printf "INFO: Found Steam Flatpak\n" &&
         proton_path="${PROTON_FLATPAK_PATH}"
 
     # exit if no Installation was found
@@ -48,12 +52,10 @@ check_requirements() {
 get_new_version() {
     # downloads the website, terminates the program, if an error occurs
     proton_version="$(curl -Ssw "%{redirect_url}" "${WEBSITE}")" || exit
-
-    # extracts the newest Proton release
     proton_version="${proton_version##*/}"
 
-    # disabled download size because GitHub broke it
-    #download_size="$(curl -Lsw "%{size_download}" "${WEBSITE}/download/${proton_version}.tar.gz")"
+    # extract download size from content-length header EXPERIMENTAL
+    download_size=$(curl -sSLI "${WEBSITE}/download/${proton_version}.tar.gz" | grep content-length | tail -1 | cut -d' ' -f2 | tr -d '\r')
 
     # output of newest version
     printf "Latest version: %s\n" "${proton_version}"
@@ -64,17 +66,18 @@ check_installed_version() {
     proton_installed="$(find "${proton_path}" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1 )"
     proton_installed="${proton_installed##*/}"
 
-    [ "${proton_version}" = "${proton_installed}" ] && printf "Latest version already installed\n" && exit 0
+    [ "${proton_version}" = "${proton_installed}" ] &&
+        printf "Latest version already installed\n" && exit 0
 
     [ -n "${proton_installed}" ] &&
         printf "Installed version: %s\n" "${proton_installed}" ||
         printf "GE-Proton is not installed\n"
 
         printf "\nChangelog: %s \n" "${WEBSITE}"
-        # printf "Download size: %s\n" "${download_size}"
+        printf "Download size: %i MiB\n" "$((download_size / 1024 / 1024))"
 
-        printf "\nInstall new version? [Y/n]: "
-        read -r answer
+        printf "\nInstall new version? [Y/n]: "; read -r answer
+
     case "${answer}" in
         [YyJj]|[Yy]es|[Jj]a|"") ;;
         *)
@@ -86,13 +89,13 @@ check_installed_version() {
 # download and verify the new proton version
 download_proton() {
     # generates a URI that curl can download
-    file="${WEBSITE}/download/${proton_version}.tar.gz"
+    tarball="${WEBSITE}/download/${proton_version}.tar.gz"
     checksum="${WEBSITE}/download/${proton_version}.sha512sum"
 
     [ -z "${XDG_CACHE_HOME}" ] && XDG_CACHE_HOME="${HOME}/.cache"
     mkdir -p "${XDG_CACHE_HOME}/updateproton" &&
         cd "${XDG_CACHE_HOME}/updateproton" &&
-        curl -#LOC- --http2 "${file}"  || exit
+        curl -#LOC- --http2 "${tarball}"  || exit
 
     printf "Verify Checksum...\n"
     curl -LSs "${checksum}" | sha512sum -c
@@ -100,7 +103,7 @@ download_proton() {
 
 # Extracts the .tar.gz archive to the destination
 unpack_proton() {
-    proton_archive="${file##*/}"
+    proton_archive="${tarball##*/}"
 
     [ -n "${proton_installed}" ] &&
         printf "Delete ALL old versions? [y/N]: " &&
