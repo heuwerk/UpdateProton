@@ -21,7 +21,7 @@ It is recommended to delete all Proton-GE versions prior GE-Proton7 for the scri
 - POSIX shell compliant
 - Should run on all major GNU/Linux Distributions  
   (tested with [Fedora Linux](https://fedoraproject.org/) and [Debian GNU/Linux](https://debian.org))
-- ~Display download size~ temporarily not available
+- Display download size
 - Complies with the [XDG Base Directory Specification](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html) (`$XDG_CACHE_HOME`)
 
 ## Usage
@@ -52,15 +52,11 @@ The script aims to use only common CLI tools, therefore it should work out of th
 ## Planned Features
 *Sorted by priority*
 
-### ~[Support for the Steam Flatpak](https://github.com/heuwerk/UpdateProton/issues/15)~
+### ~[Steam restart support](https://github.com/heuwerk/UpdateProton/issues/16)~
 
-At this time, Steam is only supported as a distro package (~/.steam must be present).
-I would like to support the flatpak version of Steam in the future.
-
-### [Steam restart support](https://github.com/heuwerk/UpdateProton/issues/16)
-
-At the end of the script, the user is alerted to restart Steam.
-It should be possible to restart Steam automatically.
+~At the end of the script, the user is alerted to restart Steam.
+It should be possible to restart Steam automatically.~  
+No longer planned #16
 
 ### Create non-user version for systemd unit
 I plan to create a version of this script that the user does not interact with directly, but which can be used as a systemd unit.

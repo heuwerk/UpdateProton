@@ -1,6 +1,6 @@
 #!/bin/sh
 # updateproton.sh - A simple shell script to update GE-Proton.
-# Copyright (C) 2023  Jan Heurich
+# Copyright (C) 2024  Jan Heurich
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -95,7 +95,7 @@ download_proton() {
     [ -z "${XDG_CACHE_HOME}" ] && XDG_CACHE_HOME="${HOME}/.cache"
     mkdir -p "${XDG_CACHE_HOME}/updateproton" &&
         cd "${XDG_CACHE_HOME}/updateproton" &&
-        curl -#LOC- --http2 "${tarball}"  || exit
+        curl -LOC- --http2 "${tarball}"  || exit
 
     printf "Verify Checksum...\n"
     curl -LSs "${checksum}" | sha512sum -c
